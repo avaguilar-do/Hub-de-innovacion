@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portafolio de Innovación</title>
+<meta name="description" content="Portafolio de Innovación · Cierre 2026 y agenda 2027">
+<meta name="theme-color" content="#1B355D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231B355D'/%3E%3Cpath d='M9 22l5-5 3 3 6-7' fill='none' stroke='%237DACE3' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='13' r='2.2' fill='%23E75301'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,600;1,8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#view">Saltar al contenido</a>
+
+<div class="app">
+<aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+<a class="brand" href="#/">
+<span class="brand-mark" aria-hidden="true">
+<svg viewBox="0 0 32 32"><path d="M8 22l5-5 3 3 7-8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23" cy="12" r="2.4" fill="#E75301"/></svg>
+</span>
+<span class="brand-text">
+<strong>Portafolio de Innovación</strong>
+<small>Cierre 2026 y agenda 2027</small>
+</span>
+</a>
+<nav id="nav" class="nav"></nav>
+</aside>
+<div class="scrim" id="scrim" aria-hidden="true"></div>
+
+<div class="main">
+<header class="topbar">
+<button class="icon-btn menu-btn" id="menuBtn" aria-label="Abrir menú" aria-controls="sidebar" aria-expanded="false">
+<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+</button>
+<nav class="breadcrumbs" id="breadcrumbs" aria-label="Ruta de navegación"></nav>
+<div class="search" role="search">
+<svg class="ic search-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+<input id="search" type="search" placeholder="Buscar proyectos…" autocomplete="off" aria-label="Buscar proyectos" aria-controls="searchResults" aria-expanded="false" role="combobox" aria-autocomplete="list">
+<kbd aria-hidden="true">/</kbd>
+<ul id="searchResults" class="search-results" role="listbox" hidden></ul>
+</div>
+</header>
+
+<main id="view" class="view" tabindex="-1"></main>
+</div>
+</div>
+
+<noscript><p style="padding:24px;font-family:sans-serif">Este sitio requiere JavaScript habilitado.</p></noscript>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
