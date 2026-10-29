@@ -2,6 +2,8 @@
 
 Sitio estático (HTML + CSS + JavaScript, sin dependencias ni build) para presentar el portafolio del Hub de Innovación a Dirección General. Listo para GitHub Pages.
 
+https://avaguilar-do.github.io/Hub-de-innovacion/#/proyecto/red-de-efectivo/resumen 
+
 ```
 /
 ├── index.html → estructura (shell): barra lateral, breadcrumbs, buscador
