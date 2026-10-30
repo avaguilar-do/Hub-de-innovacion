@@ -1,5 +1,5 @@
 /* ==========================================================================
-PORTAFOLIO DE INNOVACIÓN · app.js
+HUB DE INNOVACIÓN · app.js
 Router por hash, navegación dinámica, tabs, breadcrumbs, buscador y
 renderizado de bloques. Todo el contenido se lee de window.HUB_DATA (data.js).
 ========================================================================== */
@@ -87,14 +87,11 @@ play: '<path d="M7 5v14l11-7z"/>'
 const icon = (name, cls = "") =>
 ICONS[name] ? `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name]}</svg>` : "";
 
-const slideTag = (slides) => {
-const list = Array.isArray(slides) ? slides : slides != null ? [slides] : [];
-if (!list.length) return "";
-return `<span class="slide-tag" title="Lámina de origen">${list.length > 1 ? "Slides" : "Slide"} ${list.join(" · ")}</span>`;
-};
-
 const projectById = (id) => DATA.projects.find((p) => p.id === id);
-const initiativeByProject = (id) => DATA.portfolio.initiatives.find((i) => i.projectId === id);
+const P = DATA.portfolio;
+const BRAND = DATA.brand || { name: "", logo: "", title: "", subtitle: "" };
+const ALL = P.groups.flatMap((g) => g.initiatives.map((it) => Object.assign({}, it, { group: g.name, groupTone: g.tone })));
+const initiativeByProject = (id) => ALL.find((i) => i.projectId === id);
 
 /* ---------------------------------------------------------------------- */
 /* Renderizadores de bloques */
@@ -102,27 +99,20 @@ const initiativeByProject = (id) => DATA.portfolio.initiatives.find((i) => i.pro
 const R = {};
 
 const blockTitle = (b) =>
-b.title
-? `<div class="block-head"><h3 class="block-title ${b.titleTone ? "tone-" + b.titleTone : ""}">${esc(b.title)}</h3>${b.slide ? slideTag(b.slide) : ""}</div>`
-: b.slide
-? `<div class="block-head block-head--tagonly">${slideTag(b.slide)}</div>`
-: "";
+b.title ? `<div class="block-head"><h3 class="block-title ${b.titleTone ? "tone-" + b.titleTone : ""}">${esc(b.title)}</h3></div>` : "";
 
 const renderBlock = (b) => {
 const fn = R[b.type];
 if (!fn) return "";
 const noTitle = b.type === "heading" || b.type === "grid" || b.type === "engine";
-return `<section class="block block--${b.type}">${noTitle ? (b.type === "engine" && b.slide ? blockTitle({ slide: b.slide }) : "") : blockTitle(b)}${fn(b)}</section>`;
+return `<section class="block block--${b.type}">${noTitle ? "" : blockTitle(b)}${fn(b)}</section>`;
 };
 
 const renderBlocks = (blocks) => (blocks || []).map(renderBlock).join("");
 
 R.heading = (b) => `
 <div class="sheading">
-<div class="sheading-top">
-${b.kicker ? `<span class="kicker">${esc(b.kicker)}</span>` : "<span></span>"}
-${b.slide ? slideTag(b.slide) : ""}
-</div>
+${b.kicker ? `<span class="kicker">${esc(b.kicker)}</span>` : ""}
 <h2>${esc(b.title)}</h2>
 ${b.text || b.lead ? `<p>${b.lead ? `<strong>${esc(b.lead)}</strong> ` : ""}${esc(b.text || "")}</p>` : ""}
 </div>`;
@@ -297,7 +287,7 @@ side
 .join("")}</div>`
 : "";
 
-R.vbars = (b) => `<div class="chart-with-side">${vbarsInner(b.items)}${sideStats(b.side)}</div>${b.note ? `<p class="footnote">${esc(b.note)}</p>` : ""}`;
+R.vbars = (b) => `<div class="${b.side ? "chart-with-side" : "chart-solo"}">${vbarsInner(b.items)}${sideStats(b.side)}</div>${b.note ? `<p class="footnote">${esc(b.note)}</p>` : ""}`;
 
 R.stacked = (b) => {
 const max = Math.max(...b.items.map((i) => i.total.value));
@@ -346,13 +336,30 @@ ${i.values
 ${b.foot ? `<p class="footnote footnote--box"><strong class="tone-red">${esc(b.footLead)}</strong> ${esc(b.foot)}</p>` : ""}`;
 };
 
-R.engine = (b) => `
+R.engine = (b) => {
+const charts = b.charts || (b.chart ? [b.chart] : []);
+return `
 <div class="engine engine--${b.tone}">
 <div class="engine-head"><h4>${esc(b.title)}</h4><span class="pill pill--${b.tone}">${esc(b.share)}</span></div>
-${b.stats ? `<div class="engine-stats">${b.stats.map((s) => `<div><div class="stat-value tone-${s.tone}">${esc(s.value)}</div><p>${esc(s.text)}</p></div>`).join("")}</div>` : ""}
-${b.chart ? `<p class="mini-title">${esc(b.chart.title)}</p>${vbarsInner(b.chart.items, { small: true })}` : ""}
+${b.desc ? `<p class="engine-desc">${esc(b.desc)}</p>` : ""}
+${
+b.stats
+? `<div class="engine-stats">${b.stats
+.map((s) => `<div><div class="stat-value tone-${s.tone}">${esc(s.value)}</div><p>${esc(s.text)}${s.note ? `<small>${esc(s.note)}</small>` : ""}</p></div>`)
+.join("")}</div>`
+: ""
+}
+${
+charts.length
+? `<div class="engine-charts" style="--n:${charts.length}">${charts
+.map((c) => `<div><p class="mini-title ${c.titleTone ? "tone-" + c.titleTone : ""}">${esc(c.title)}</p>${vbarsInner(c.items, { small: true })}</div>`)
+.join("")}</div>`
+: ""
+}
 ${b.body ? `<p class="engine-body">${esc(b.body)}</p>` : ""}
+${b.foot ? `<p class="engine-foot">${esc(b.foot)}</p>` : ""}
 </div>`;
+};
 
 R.cards = (b) => `
 <div class="cards" style="--n:${b.cols || 3}">
@@ -594,42 +601,193 @@ ${b.items.map((m, i) => `<div class="metric" style="--d:${i * 60}ms"><span class
 </div>`;
 
 /* ---------------------------------------------------------------------- */
-/* Componentes del portafolio (Slide 4) */
+/* Renderizadores adicionales */
 /* ---------------------------------------------------------------------- */
-const P = DATA.portfolio;
+R.premises = (b) => `
+<div class="premises">
+${b.items
+.map(
+(p, i) => `<div class="premise premise--${p.tone || "deep"}" style="--d:${i * 60}ms"><strong>${esc(p.value)}</strong><span>${esc(p.text)}</span></div>`
+)
+.join("")}
+</div>`;
 
-const typeClass = (t) => (norm(t).includes("fabrica") ? "type--fabrica" : "type--innov");
+R.banner = (b) => `
+<div class="banner">
+<strong class="banner-value">${esc(b.value)}</strong>
+<p>${esc(b.text)}</p>
+</div>`;
 
+R.share = (b) => `
+<div class="share">
+${b.items
+.map(
+(p, i) => `
+<div class="share-item" style="--d:${i * 70}ms">
+<div class="share-main">
+<h4>${esc(p.name)}</h4>
+<p class="share-terms">${esc(p.terms)}</p>
+<p class="share-text">${esc(p.text)}</p>
+</div>
+<div class="share-bars">
+<div class="share-bar"><span class="share-pct tone-mid">${p.credits}%</span><span class="share-track"><span class="share-fill bg-mid grow-x" style="width:${p.credits}%"></span></span><small>${esc(b.labels.credits)}</small></div>
+<div class="share-bar"><span class="share-pct tone-orange">${p.origination}%</span><span class="share-track"><span class="share-fill bg-orange grow-x" style="width:${p.origination}%"></span></span><small>${esc(b.labels.origination)}</small></div>
+</div>
+</div>`
+)
+.join("")}
+</div>
+${b.foot ? `<p class="footnote">${esc(b.foot)}</p>` : ""}`;
+
+R.products = (b) => `
+<div class="products">
+${b.items
+.map(
+(p, i) => `
+<article class="product" style="--d:${i * 80}ms">
+<header class="product-head"><span>${esc(p.tag)}</span><h4>${esc(p.name)}</h4></header>
+<p class="product-tagline">${esc(p.tagline)}</p>
+<dl class="product-specs">
+${p.specs.map((s) => `<div><dt>${esc(s.label)}</dt><dd class="${s.accent ? "tone-orange" : ""}">${esc(s.value)}</dd></div>`).join("")}
+</dl>
+<p class="mini-kicker product-comp-title">${esc(b.competitorsTitle)}</p>
+<div class="product-table-wrap">
+<table class="dtable dense product-table">
+<thead><tr><th>${esc(p.columns[0])} <span class="pt-sub">${esc(p.columns[1])} · ${esc(p.columns[2])}</span></th><th class="ar">${esc(p.columns[3])}</th></tr></thead>
+<tbody>${p.competitors
+.map((r) => `<tr><td><strong>${esc(r[0])}</strong><small>${esc(r[1])} · ${esc(r[2])}</small></td><td class="ar strong">${esc(r[3])}</td></tr>`)
+.join("")}</tbody>
+</table>
+</div>
+<p class="product-takeaway"><strong>${esc(p.takeawayLead)}</strong> ${esc(p.takeaway)}</p>
+</article>`
+)
+.join("")}
+</div>`;
+
+R.multistack = (b) => {
+const totals = b.items.map((i) => i.values.reduce((a, v) => a + v.value, 0));
+const max = Math.max(...totals);
+return `
+<div class="mstack">
+${b.items
+.map(
+(it, n) => `
+<div class="mstack-col" style="--d:${n * 70}ms">
+<span class="mstack-bar grow-y" style="height:${Math.max(1, (totals[n] / max) * 100)}%">
+${it.values
+.map((v, k) => ({ v, k }))
+.reverse()
+.map(({ v, k }) => (v.value ? `<span class="mstack-seg bg-${b.series[k].tone}" style="flex:${v.value}">${v.display ? `<em>${esc(v.display)}</em>` : ""}</span>` : ""))
+.join("")}
+</span>
+<span class="mstack-label">${esc(it.label)}</span>
+</div>`
+)
+.join("")}
+</div>
+<div class="legend">${b.series.map((s) => `<span><i class="swatch bg-${s.tone}"></i>${esc(s.label)}</span>`).join("")}</div>`;
+};
+
+R.contribution = (b) => `
+${b.sub ? `<p class="contrib-sub">${esc(b.sub)}</p>` : ""}
+<div class="contrib">
+${b.items
+.map(
+(c) => `
+<div class="contrib-item">
+<h4><i class="dot bg-${c.tone}"></i>${esc(c.name)}</h4>
+<div class="contrib-stats">${c.stats.map((s) => `<div><strong class="tone-${c.tone}">${esc(s.value)}</strong><span>${esc(s.label)}</span></div>`).join("")}</div>
+<p>${esc(c.text)}</p>
+</div>`
+)
+.join("")}
+</div>`;
+
+R.phases = (b) => {
+const cols = b.quarters.length;
+const total = cols * 3;
+const pct = (m) => ((m / total) * 100).toFixed(3) + "%";
+let acc = 0;
+const yearLines = b.years
+.slice(0, -1)
+.map((y) => {
+acc += y.span;
+return `<span class="ph-yline" style="left:${pct(acc * 3)}"></span>`;
+})
+.join("");
+const phaseOf = (k) => b.legend.find((l) => l.key === k) || {};
+const rows = b.rows
+.map(
+(r) => `
+<div class="ph-row">
+<div class="ph-name"><strong>${esc(r.name)}</strong><small>${esc(r.sub)}</small></div>
+<div class="ph-track">
+${r.bars
+.map(
+(bar, i) =>
+`<span class="ph-bar ph-bar--${phaseOf(bar.phase).tone} ${i < r.bars.length - 1 || bar.phase !== "masif" ? "has-gate" : ""} grow-x" style="left:${pct(bar.from)};width:calc(${pct(bar.to - bar.from)} - 4px);--d:${i * 90}ms" title="${esc(phaseOf(bar.phase).label)} · ${esc(bar.label)}">${esc(bar.label)}</span>`
+)
+.join("")}
+${r.milestone ? `<span class="ph-ms" style="left:${pct(r.milestone.at)}"><em>${esc(r.milestone.label)}</em><i></i></span>` : ""}
+</div>
+</div>`
+)
+.join("");
+return `
+<div class="gantt-scroll">
+<div class="phases">
+<div class="ph-head">
+<span></span>
+<div class="ph-axis">
+<div class="ph-years" style="grid-template-columns:repeat(${cols},1fr)">${b.years.map((y) => `<span style="grid-column:span ${y.span}">${esc(y.label)}</span>`).join("")}</div>
+<div class="ph-quarters" style="grid-template-columns:repeat(${cols},1fr)">${b.quarters.map((q) => `<span>${esc(q)}</span>`).join("")}</div>
+</div>
+</div>
+<div class="ph-body">
+<div class="ph-grid"><span></span><div class="ph-lines">${yearLines}<span class="ph-t0" style="left:${pct(b.t0.at)}"><em>${esc(b.t0.label)}</em></span></div></div>
+${rows}
+</div>
+</div>
+</div>
+<div class="legend">${b.legend.map((l) => `<span><i class="swatch bg-${l.tone}"></i>${esc(l.label)}</span>`).join("")}</div>
+<p class="scroll-hint">${icon("arrowRight", "ic-xs")} Desliza para ver la línea de tiempo completa</p>`;
+};
+
+R.phasecards = (b) => `
+<div class="phasecards">
+${b.items
+.map(
+(c, i) => `
+<article class="phasecard phasecard--${c.tone}" style="--d:${i * 70}ms">
+<h4>${esc(c.title)} <small>${esc(c.duration)}</small></h4>
+<p>${esc(c.text)}</p>
+<p class="phasecard-gate">◇ <strong>${esc(c.gateLabel)}</strong> ${esc(c.gate)}</p>
+</article>`
+)
+.join("")}
+</div>`;
+
+/* ---------------------------------------------------------------------- */
+/* Portafolio */
+/* ---------------------------------------------------------------------- */
 const qTrack = (r) => `
-<div class="qtrack" aria-label="Roadmap 2027: ${esc(P.quarters[r.from - 1])}${r.to !== r.from ? " a " + esc(P.quarters[r.to - 1]) : ""}">
-${P.quarters.map((q) => `<span class="qcell"></span>`).join("")}
+<div class="qtrack" aria-label="${esc(P.columns.roadmap)}: ${esc(P.quarters[r.from - 1])}${r.to !== r.from ? " a " + esc(P.quarters[r.to - 1]) : ""}">
+${P.quarters.map(() => `<span class="qcell"></span>`).join("")}
 <span class="qbar qbar--${r.tone} grow-x" style="grid-column:${r.from} / ${r.to + 1}"></span>
 </div>`;
 
-const portfolioCard = (it, i) => {
-const tag = it.projectId ? "a" : "div";
-const href = it.projectId ? ` href="#/proyecto/${it.projectId}"` : "";
-return `
-<${tag} class="pcard ${it.projectId ? "" : "pcard--static"}"${href} data-stage="${esc(slug(it.stage))}" data-search="${esc(norm([it.name, it.type, it.stage, it.status, it.kpiLabel, it.roadmap.label].join(" ")))}" style="--d:${i * 70}ms">
-<div class="pcard-top">
-<span class="type ${typeClass(it.type)}">${icon("play", "ic-xs")}${esc(it.type)}</span>
-<span class="stage stage--${it.stageStyle}">${esc(it.stage)}</span>
-</div>
-<h3>${esc(it.name)}</h3>
-<div class="pcard-kpi">
-<strong>${esc(it.kpiValue)}${it.kpiMark ? `<sup>${esc(it.kpiMark)}</sup>` : ""}</strong>
-<span>${esc(it.kpiLabel)}</span>
-</div>
-<div class="pcard-field"><span class="field-label">${esc(P.columns.status)}</span><p>${esc(it.status)}</p></div>
-<div class="pcard-field">
-<span class="field-label">${esc(P.columns.roadmap)}</span>
-<div class="qhead">${P.quarters.map((q) => `<span>${esc(q)}</span>`).join("")}</div>
-${qTrack(it.roadmap)}
-<p class="road-label">${esc(it.roadmap.label)}</p>
-</div>
-${it.projectId ? `<span class="pcard-cta">Ver detalle ${icon("arrowRight", "ic-sm")}</span>` : ""}
-</${tag}>`;
-};
+const portfolioRow = (it) => `
+<tr ${it.projectId ? `data-href="#/proyecto/${it.projectId}" tabindex="0"` : ""}>
+<td>
+<div class="pt-name"><span class="tri grp--${it.groupTone}">${icon("play", "ic-xs")}</span>
+<div><strong>${esc(it.name)}</strong>${it.projectId ? `<small class="pt-link">Ver detalle ${icon("arrowRight", "ic-xs")}</small>` : ""}</div></div>
+</td>
+<td>${it.kpiValue ? `<div class="pt-kpi"><strong>${esc(it.kpiValue)}${it.kpiMark ? `<sup>${esc(it.kpiMark)}</sup>` : ""}</strong><small>${esc(it.kpiLabel || "")}</small></div>` : ""}</td>
+<td>${it.stage ? `<span class="stage stage--${it.stageStyle}">${esc(it.stage)}</span>` : ""}</td>
+<td class="pt-status">${esc(it.status || "")}</td>
+<td class="pt-road">${it.roadmap ? `${qTrack(it.roadmap)}<small>${esc(it.roadmap.label)}</small>` : ""}</td>
+</tr>`;
 
 const portfolioTable = () => `
 <div class="table-wrap ptable-wrap">
@@ -643,138 +801,85 @@ const portfolioTable = () => `
 <th class="th-road"><span class="road-title">${esc(P.columns.roadmap)}</span><div class="qhead">${P.quarters.map((q) => `<span>${esc(q)}</span>`).join("")}</div></th>
 </tr>
 </thead>
-<tbody>
-${P.initiatives
+${P.groups
 .map(
-(it) => `
-<tr data-stage="${esc(slug(it.stage))}" data-search="${esc(norm([it.name, it.type, it.stage, it.status, it.kpiLabel, it.roadmap.label].join(" ")))}" ${it.projectId ? `data-href="#/proyecto/${it.projectId}" tabindex="0"` : ""}>
-<td>
-<div class="pt-name"><span class="tri ${typeClass(it.type)}">${icon("play", "ic-xs")}</span>
-<div><strong>${esc(it.name)}</strong><small class="${typeClass(it.type)}">${esc(it.type)}</small></div></div>
-</td>
-<td><div class="pt-kpi"><strong>${esc(it.kpiValue)}${it.kpiMark ? `<sup>${esc(it.kpiMark)}</sup>` : ""}</strong><small>${esc(it.kpiLabel)}</small></div></td>
-<td><span class="stage stage--${it.stageStyle}">${esc(it.stage)}</span></td>
-<td class="pt-status">${esc(it.status)}</td>
-<td class="pt-road">${qTrack(it.roadmap)}<small>${esc(it.roadmap.label)}</small></td>
-</tr>`
+(g) => `
+<tbody class="pt-group grp--${g.tone}">
+<tr class="pt-group-row"><th colspan="5" scope="colgroup"><span class="pt-group-name">${icon("play", "ic-xs")}${esc(g.name)}</span><span class="pt-group-count">${g.initiatives.length}</span></th></tr>
+${ALL.filter((it) => it.group === g.name).map(portfolioRow).join("")}
+</tbody>`
 )
 .join("")}
-</tbody>
 </table>
 </div>`;
 
 /* ---------------------------------------------------------------------- */
 /* Vistas */
 /* ---------------------------------------------------------------------- */
-const state = { view: "cards", stage: "all", query: "", projectId: null, tabId: null };
+const state = { projectId: null, tabId: null };
 
 const view = $("#view");
 
-const countBy = (key) =>
-P.initiatives.reduce((acc, it) => {
-acc[it[key]] = (acc[it[key]] || 0) + 1;
-return acc;
-}, {});
-
 function renderHome() {
 state.projectId = null;
-const stages = countBy("stage");
-const types = countBy("type");
-const stageOrder = Object.keys(stages);
-const stageStyleOf = (s) => (P.initiatives.find((i) => i.stage === s) || {}).stageStyle;
+const stages = ALL.reduce((acc, it) => {
+if (it.stage) acc[it.stage] = (acc[it.stage] || 0) + 1;
+return acc;
+}, {});
+const stageStyleOf = (s) => (ALL.find((i) => i.stage === s) || {}).stageStyle;
 
 view.innerHTML = `
 <div class="page page--home">
 <section class="hero">
 <div class="hero-main">
-<div class="hero-kicker"><span class="kicker">${esc(P.slideTitle)}</span>${slideTag(P.slide)}</div>
+<span class="kicker">${esc(P.kicker)}</span>
 <h1 class="hero-title">${esc(P.pageTitle)}</h1>
-<p class="hero-sub">${esc(P.subtitle)}</p>
+<div class="objective">
+<span class="objective-label">${icon("target", "ic-sm")}${esc(P.objectiveLabel)}</span>
+<p>${esc(P.objective)}</p>
+</div>
 </div>
 <div class="hero-side">
 <div class="hero-count">
-<strong>${P.initiatives.length}</strong>
+<strong>${ALL.length}</strong>
 <span>Iniciativas</span>
 </div>
 <div class="hero-breakdown">
 <span class="field-label">${esc(P.columns.stage)}</span>
-${stageOrder
+${Object.keys(stages)
 .map(
-(s) => `<div class="hb-row"><span class="stage stage--${stageStyleOf(s)} stage--sm">${esc(s)}</span><span class="hb-bar"><i style="width:${(stages[s] / P.initiatives.length) * 100}%"></i></span><strong>${stages[s]}</strong></div>`
+(s) => `<div class="hb-row"><span class="stage stage--${stageStyleOf(s)} stage--sm">${esc(s)}</span><span class="hb-bar"><i style="width:${(stages[s] / ALL.length) * 100}%"></i></span><strong>${stages[s]}</strong></div>`
 )
 .join("")}
 </div>
 <div class="hero-types">
-${Object.keys(types)
-.map((t) => `<span class="type ${typeClass(t)}">${icon("play", "ic-xs")}${esc(t)} <strong>${types[t]}</strong></span>`)
-.join("")}
+${P.groups.map((g) => `<span class="type grp--${g.tone}">${icon("play", "ic-xs")}${esc(g.name)} <strong>${g.initiatives.length}</strong></span>`).join("")}
 </div>
 </div>
 </section>
 
 <blockquote class="statement statement--hero">${esc(P.statement)}</blockquote>
 
-<div class="toolbar" role="toolbar" aria-label="Filtros del portafolio">
-<div class="filters" role="group" aria-label="Filtrar por ${esc(P.columns.stage)}">
-<button class="fchip ${state.stage === "all" ? "is-active" : ""}" data-stage="all">Todas <span>${P.initiatives.length}</span></button>
-${stageOrder
-.map((s) => `<button class="fchip ${state.stage === slug(s) ? "is-active" : ""}" data-stage="${esc(slug(s))}">${esc(s)} <span>${stages[s]}</span></button>`)
-.join("")}
-</div>
-<div class="viewtoggle" role="group" aria-label="Vista">
-<button class="vt ${state.view === "cards" ? "is-active" : ""}" data-view="cards" aria-pressed="${state.view === "cards"}">${icon("grid", "ic-sm")}Tarjetas</button>
-<button class="vt ${state.view === "table" ? "is-active" : ""}" data-view="table" aria-pressed="${state.view === "table"}">${icon("table", "ic-sm")}Tabla</button>
-</div>
+<div class="section-head">
+<h2 class="block-title">${esc(P.tableTitle)}</h2>
+<p>${esc(P.subtitle)}</p>
 </div>
 
-<div id="portfolio-body">
-${state.view === "cards" ? `<div class="pgrid">${P.initiatives.map(portfolioCard).join("")}</div>` : portfolioTable()}
-<p class="empty" hidden>Sin resultados para la búsqueda.</p>
-</div>
+${portfolioTable()}
 
 <div class="notes notes--page">${P.notes.map((n) => `<p>${esc(n)}</p>`).join("")}</div>
 </div>`;
 
-$$(".fchip", view).forEach((b) =>
-b.addEventListener("click", () => {
-state.stage = b.dataset.stage;
-$$(".fchip", view).forEach((x) => x.classList.toggle("is-active", x === b));
-applyFilters();
-})
-);
-$$(".vt", view).forEach((b) =>
-b.addEventListener("click", () => {
-if (state.view === b.dataset.view) return;
-state.view = b.dataset.view;
-renderHome();
-})
-);
 $$("tr[data-href]", view).forEach((tr) => {
-const go = () => (location.hash = tr.dataset.href);
-tr.addEventListener("click", go);
+const goRow = () => (location.hash = tr.dataset.href);
+tr.addEventListener("click", goRow);
 tr.addEventListener("keydown", (e) => {
-if (e.key === "Enter") go();
+if (e.key === "Enter") goRow();
 });
 });
-applyFilters();
-setBreadcrumbs([{ label: P.pageTitle }]);
+setBreadcrumbs([{ label: BRAND.title }]);
 setActiveNav("home");
-document.title = "Portafolio de Innovación";
-}
-
-function applyFilters() {
-const q = norm(state.query).trim();
-const items = $$("#portfolio-body [data-search]", view);
-let visible = 0;
-items.forEach((el) => {
-const okStage = state.stage === "all" || el.dataset.stage === state.stage;
-const okQuery = !q || el.dataset.search.includes(q);
-const show = okStage && okQuery;
-el.hidden = !show;
-if (show) visible++;
-});
-const empty = $(".empty", view);
-if (empty) empty.hidden = visible > 0;
+document.title = BRAND.title;
 }
 
 function renderProject(project, tabId) {
@@ -790,8 +895,8 @@ view.innerHTML = `
 <span class="phead-icon">${icon(project.icon)}</span>
 <div class="phead-text">
 <div class="phead-meta">
-${init ? `<span class="type ${typeClass(init.type)}">${icon("play", "ic-xs")}${esc(init.type)}</span>` : ""}
-${slideTag(project.slides)}
+${init ? `<span class="type grp--${init.groupTone}">${icon("play", "ic-xs")}${esc(init.group)}</span>` : ""}
+${init && init.stage ? `<span class="stage stage--${init.stageStyle} stage--sm">${esc(init.stage)}</span>` : ""}
 </div>
 <h1>${esc(project.header.title)}</h1>
 ${project.header.subtitle ? `<p>${esc(project.header.subtitle)}</p>` : ""}
@@ -801,7 +906,7 @@ ${project.header.subtitle ? `<p>${esc(project.header.subtitle)}</p>` : ""}
 <nav class="tabs" role="tablist" aria-label="Secciones de ${esc(project.name)}">
 ${tabs
 .map(
-(t, i) => `<button class="tab" role="tab" id="tab-${t.id}" aria-controls="panel" data-tab="${t.id}" aria-selected="false" tabindex="-1"><span class="tab-n">${String(i + 1).padStart(2, "0")}</span>${esc(t.label)}</button>`
+(t) => `<button class="tab" role="tab" id="tab-${t.id}" aria-controls="panel" data-tab="${t.id}" aria-selected="false" tabindex="-1">${esc(t.label)}</button>`
 )
 .join("")}
 <span class="tab-ink" aria-hidden="true"></span>
@@ -834,7 +939,6 @@ window.scrollTo({ top: 0, behavior: "auto" });
 state.projectId = project.id;
 state.tabId = tab.id;
 
-// Tabs activos
 $$(".tab", view).forEach((btn) => {
 const on = btn.dataset.tab === tab.id;
 btn.classList.toggle("is-active", on);
@@ -846,20 +950,15 @@ btn.scrollIntoView({ block: "nearest", inline: "center", behavior: reduceMotion 
 }
 });
 
-// Panel
 const panel = $("#panel", view);
 panel.setAttribute("aria-labelledby", "tab-" + tab.id);
 panel.innerHTML = `
-<div class="panel-head">
-<h2 class="panel-title">${esc(tab.label)}</h2>
-${slideTag(tab.slides)}
-</div>
+<div class="panel-head"><h2 class="panel-title">${esc(tab.label)}</h2></div>
 ${renderBlocks(tab.blocks)}`;
 panel.classList.remove("is-in");
 void panel.offsetWidth;
 panel.classList.add("is-in");
 
-// Pager
 const i = project.tabs.indexOf(tab);
 const prev = project.tabs[i - 1];
 const next = project.tabs[i + 1];
@@ -872,9 +971,9 @@ const tabsTop = $(".tabs-wrap", view).getBoundingClientRect().top;
 if (tabsTop < 0) window.scrollTo({ top: window.scrollY + tabsTop - 64, behavior: reduceMotion ? "auto" : "smooth" });
 }
 
-setBreadcrumbs([{ label: P.pageTitle, href: "#/" }, { label: project.name, href: `#/proyecto/${project.id}` }, { label: tab.label }]);
+setBreadcrumbs([{ label: BRAND.title, href: "#/" }, { label: project.name, href: `#/proyecto/${project.id}` }, { label: tab.label }]);
 setActiveNav(project.id);
-document.title = `${project.name} · ${tab.label} · Portafolio de Innovación`;
+document.title = `${project.name} · ${tab.label} · ${BRAND.title}`;
 }
 
 function moveInk(btn) {
@@ -885,21 +984,36 @@ ink.style.transform = `translateX(${btn.offsetLeft}px)`;
 }
 
 /* ---------------------------------------------------------------------- */
-/* Shell: navegación lateral, breadcrumbs, buscador */
+/* Shell: marca, navegación lateral, breadcrumbs */
 /* ---------------------------------------------------------------------- */
+function buildBrand() {
+const el = $("#brand");
+el.innerHTML = `
+<span class="brand-logo">${
+BRAND.logo ? `<img src="${esc(BRAND.logo)}" alt="${esc(BRAND.name)}">` : `<span class="brand-wordmark">${esc(BRAND.name)}</span>`
+}</span>
+<span class="brand-text"><strong>${esc(BRAND.title)}</strong><small>${esc(BRAND.subtitle)}</small></span>`;
+el.setAttribute("aria-label", `${BRAND.name} · ${BRAND.title}`);
+}
+
 function buildNav() {
 const nav = $("#nav");
 nav.innerHTML = `
 <a class="nav-item" href="#/" data-nav="home">${icon("home")}<span>Portafolio</span></a>
-<p class="nav-group">Iniciativas</p>
-${P.initiatives
+${P.groups
+.map(
+(g) => `
+<p class="nav-group grp--${g.tone}">${esc(g.name)}</p>
+${ALL.filter((it) => it.group === g.name)
 .map((it) => {
 const p = it.projectId && projectById(it.projectId);
 if (!p) {
-return `<div class="nav-item nav-item--off" title="${esc(it.name)}">${icon("doc")}<span>${esc(it.name)}<small>${esc(it.stage)}</small></span></div>`;
+return `<div class="nav-item nav-item--off" title="${esc(it.name)}">${icon("chip")}<span>${esc(it.name)}<small>${esc(it.stage || "")}</small></span></div>`;
 }
-return `<a class="nav-item" href="#/proyecto/${p.id}" data-nav="${p.id}">${icon(p.icon)}<span>${esc(p.name)}<small>${esc(it.stage)}</small></span><i class="nav-dot stage-dot--${it.stageStyle}"></i></a>`;
+return `<a class="nav-item" href="#/proyecto/${p.id}" data-nav="${p.id}">${icon(p.icon)}<span>${esc(p.name)}<small>${esc(it.stage || "")}</small></span><i class="nav-dot stage-dot--${it.stageStyle}"></i></a>`;
 })
+.join("")}`
+)
 .join("")}`;
 $$("a", nav).forEach((a) => a.addEventListener("click", closeNav));
 }
@@ -932,110 +1046,9 @@ app.classList.remove("nav-open");
 $("#menuBtn").setAttribute("aria-expanded", "false");
 }
 
-// Índice de búsqueda: iniciativas (Slide 4) + secciones de cada proyecto
-const searchIndex = [];
-P.initiatives.forEach((it) => {
-const p = it.projectId && projectById(it.projectId);
-searchIndex.push({
-title: it.name,
-meta: `${it.type} · ${it.stage}`,
-href: p ? `#/proyecto/${p.id}` : null,
-icon: p ? p.icon : "doc",
-text: norm([it.name, it.type, it.stage, it.status, it.kpiValue, it.kpiLabel, it.roadmap.label, p ? p.header.title : "", p ? p.header.subtitle : ""].join(" "))
-});
-if (p) {
-p.tabs.forEach((t) =>
-searchIndex.push({
-title: t.label,
-meta: p.name,
-href: `#/proyecto/${p.id}/${t.id}`,
-icon: "chevron",
-sub: true,
-text: norm([t.label, p.name, JSON.stringify(t.blocks)].join(" "))
-})
-);
-}
-});
-
-const searchInput = $("#search");
-const results = $("#searchResults");
-let activeIdx = -1;
-
-function runSearch() {
-const q = norm(searchInput.value).trim();
-state.query = searchInput.value;
-if (!state.projectId) applyFilters();
-if (!q) {
-results.hidden = true;
-results.innerHTML = "";
-searchInput.setAttribute("aria-expanded", "false");
-return;
-}
-const terms = q.split(/\s+/);
-const hits = searchIndex.filter((e) => terms.every((t) => e.text.includes(t))).slice(0, 8);
-activeIdx = -1;
-results.innerHTML = hits.length
-? hits
-.map(
-(h, i) =>
-`<li role="option" id="sr-${i}">${
-h.href
-? `<a href="${h.href}" class="${h.sub ? "is-sub" : ""}">${icon(h.icon, "ic-sm")}<span><strong>${esc(h.title)}</strong><small>${esc(h.meta)}</small></span></a>`
-: `<div class="sr-static">${icon(h.icon, "ic-sm")}<span><strong>${esc(h.title)}</strong><small>${esc(h.meta)}</small></span></div>`
-}</li>`
-)
-.join("")
-: `<li class="sr-empty">Sin resultados</li>`;
-results.hidden = false;
-searchInput.setAttribute("aria-expanded", "true");
-}
-
-function closeSearch() {
-results.hidden = true;
-searchInput.setAttribute("aria-expanded", "false");
-}
-
-searchInput.addEventListener("input", runSearch);
-searchInput.addEventListener("focus", () => searchInput.value && runSearch());
-searchInput.addEventListener("keydown", (e) => {
-const links = $$("a", results);
-if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-if (!links.length) return;
-e.preventDefault();
-activeIdx = (activeIdx + (e.key === "ArrowDown" ? 1 : -1) + links.length) % links.length;
-links.forEach((l, i) => l.classList.toggle("is-active", i === activeIdx));
-searchInput.setAttribute("aria-activedescendant", links[activeIdx].parentElement.id);
-} else if (e.key === "Enter") {
-const target = links[activeIdx] || links[0];
-if (target) {
-e.preventDefault();
-go(target.getAttribute("href"));
-searchInput.blur();
-closeSearch();
-}
-} else if (e.key === "Escape") {
-searchInput.value = "";
-runSearch();
-searchInput.blur();
-}
-});
-results.addEventListener("click", (e) => {
-if (e.target.closest("a")) {
-closeSearch();
-closeNav();
-}
-});
-document.addEventListener("click", (e) => {
-if (!e.target.closest(".search")) closeSearch();
-});
 document.addEventListener("keydown", (e) => {
-if (e.key === "/" && document.activeElement !== searchInput && !/input|textarea/i.test(document.activeElement.tagName)) {
-e.preventDefault();
-searchInput.focus();
-}
 if (e.key === "Escape") closeNav();
 });
-
 $("#menuBtn").addEventListener("click", () => (app.classList.contains("nav-open") ? closeNav() : openNav()));
 $("#scrim").addEventListener("click", closeNav);
 
@@ -1065,6 +1078,7 @@ renderHome();
 window.scrollTo({ top: 0, behavior: "auto" });
 }
 
+buildBrand();
 buildNav();
 window.addEventListener("hashchange", route);
 route();
