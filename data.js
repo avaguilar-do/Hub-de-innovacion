@@ -1,13 +1,25 @@
 /* ==========================================================================
-PORTAFOLIO DE INNOVACIÓN · data.js
-Fuente única de contenido. Todo texto y cifra proviene literalmente del PDF
-"Hub_Innovacion_2026_2027_DE_1.pdf". Cada pestaña declara las láminas de origen.
+HUB DE INNOVACIÓN · data.js
+Fuente única de contenido. Los textos y cifras provienen del documento
+"Hub de Innovación · Cierre de agenda 2026 & agenda 2027".
 Para actualizar el sitio, edita únicamente este archivo.
 ========================================================================== */
 
 window.HUB_DATA = {
 /* ------------------------------------------------------------------------
-Paleta oficial (fotografía de la guía de color compartida)
+Marca
+logo: deja "" para mostrar el texto; o pon la imagen del logo como
+data URI ("data:image/png;base64,...") o como ruta a un archivo del repo.
+------------------------------------------------------------------------ */
+brand: {
+name: "Consubanco",
+logo: "data:image/png;base64,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",
+title: "Hub de Innovación",
+subtitle: "Cierre 2026 y agenda 2027"
+},
+
+/* ------------------------------------------------------------------------
+Paleta oficial (guía de color compartida)
 ------------------------------------------------------------------------ */
 palette: {
 azulProfundo: { name: "Azul Profundo", pantone: "Pantone 534 C", hex: "#1B355D" },
@@ -18,12 +30,14 @@ negro: { name: "Negro", hex: "#000000" }
 },
 
 /* ------------------------------------------------------------------------
-PÁGINA PRINCIPAL · Slide 4
+PÁGINA PRINCIPAL
 ------------------------------------------------------------------------ */
 portfolio: {
-slide: 4,
-pageTitle: "PORTAFOLIO DE INNOVACIÓN",
-slideTitle: "Portafolio de Innovación · Cierre 2026 y agenda 2027",
+pageTitle: "HUB DE INNOVACIÓN",
+kicker: "Hub de Innovación · Cierre 2026 y agenda 2027",
+objectiveLabel: "Objetivo",
+objective: "Somos dueños de una capacidad institucional y de la metodología de innovación del Grupo. Identificamos oportunidades, incubamos, experimentamos, piloteamos y entregamos evidencia para las decisiones del negocio y de la Alta Dirección",
+tableTitle: "Portafolio 2026 - 2027 · Estatus de cada iniciativa",
 subtitle: "Dónde cierra cada iniciativa en 2026, a qué etapa llega en 2027 y en qué trimestre.",
 statement: "El portafolio: defiende y rentabiliza la base de pensionados que ya tenemos, y construye la relación con el pensionado que viene.",
 columns: {
@@ -38,25 +52,19 @@ notes: [
 "* MVNO: cifra con estimaciones propias, pendiente de validación con Finanzas y Riesgos.",
 "Alianza rentas vitalicias: IMSS, Informe al Ejecutivo Federal y al Congreso de la Unión 2024-2025, cap. IV (sumas aseguradas del Seguro de Invalidez y Vida transferidas a aseguradoras)."
 ],
-/* stageStyle: estilo visual de la etiqueta de etapa en la lámina.
-roadmap.from/to: trimestres (1-4) que cubre la barra del roadmap 2027 en la lámina.
-roadmap.tone: color de la barra en la lámina. */
-initiatives: [
+/* Grupos en el orden en que se muestran.
+tone: color del grupo (deep · orange · mid).
+stageStyle: estilo de la etiqueta de etapa (soft · solid · pending).
+roadmap.from/to: trimestres (1-4) que cubre la barra del roadmap 2027.
+Los campos que no existan en el documento se dejan fuera y no se muestran. */
+groups: [
 {
-projectId: "red-de-efectivo",
-name: "Red de efectivo",
-type: "Innovación abierta",
-kpiValue: "10,738",
-kpiLabel: "puntos de depósito y retiro",
-stage: "Por aprobar",
-stageStyle: "pending",
-status: "Alianza lista para mapear las capacidades operativas y tecnológicas requeridas.",
-roadmap: { label: "piloto de 90 días en una cadena · sujeto a aprobación", from: 1, to: 2, tone: "pending" }
-},
+name: "Intraemprendimiento",
+tone: "deep",
+initiatives: [
 {
 projectId: "alianza-rentas-vitalicias",
 name: "Alianza rentas vitalicias",
-type: "Innovación interna",
 kpiValue: "$14,262 MDP",
 kpiLabel: "entregó el IMSS a aseguradoras en 2024 para rentas vitalicias",
 stage: "Piloto no funcional",
@@ -65,9 +73,24 @@ status: "En revisión de viabilidad regulatoria con Jurídico y, después, con C
 roadmap: { label: "con Afore y aseguradora", from: 2, to: 3, tone: "slate" }
 },
 {
+projectId: "brigada-cx",
+name: "Brigada CX",
+kpiValue: "42 mil",
+kpiLabel: "clientes activos al mes en la PUC",
+stage: "Piloto funcional",
+stageStyle: "soft",
+status: "Desarrollo de playbooks y mapeo de requerimientos de las áreas operativas clave para validación.",
+roadmap: { label: "validación con áreas operativas", from: 1, to: 1, tone: "orange" }
+}
+]
+},
+{
+name: "Fábrica de ideas",
+tone: "orange",
+initiatives: [
+{
 projectId: "comunidad-lazos",
 name: "Comunidad Lazos",
-type: "Fábrica de ideas",
 kpiValue: "27.8%",
 kpiLabel: "TIR sin costo de fondeo · base",
 stage: "Salida a mercado",
@@ -78,7 +101,6 @@ roadmap: { label: "A producción en enero", from: 1, to: 2, tone: "deep" }
 {
 projectId: "consumovil",
 name: "MVNO · ConsuMóvil",
-type: "Fábrica de ideas",
 kpiValue: "$84 MDP",
 kpiMark: "*",
 kpiLabel: "ingreso neto acumulado a 2031",
@@ -88,42 +110,54 @@ status: "Calibración de la oferta según las expectativas de los consumidores y
 roadmap: { label: "Lanzamiento del piloto funcional", from: 1, to: 2, tone: "orange" }
 },
 {
-projectId: null,
+projectId: "oferta-banca-minorista",
 name: "Oferta banca minorista",
-type: "Fábrica de ideas",
 kpiValue: "$2,010 MDP",
 kpiLabel: "originación acumulada 2027–2031",
 stage: "Piloto no funcional",
 stageStyle: "soft",
 status: "En validación con clientes con Bankaya y modelo financiero con Finanzas.",
 roadmap: { label: "Lanzamiento del piloto funcional", from: 1, to: 3, tone: "mid" }
-},
-{
-projectId: "brigada-cx",
-name: "Brigada CX",
-type: "Innovación interna",
-kpiValue: "42 mil",
-kpiLabel: "clientes activos al mes en la PUC",
-stage: "Piloto funcional",
-stageStyle: "soft",
-status: "Desarrollo de playbooks y mapeo de requerimientos de las áreas operativas clave para validación.",
-roadmap: { label: "validación con áreas operativas", from: 1, to: 1, tone: "orange" }
 }
 ]
 },
+{
+name: "Innovación abierta",
+tone: "mid",
+initiatives: [
+{
+projectId: "red-de-efectivo",
+name: "Red de efectivo",
+kpiValue: "10,738",
+kpiLabel: "puntos de depósito y retiro",
+stage: "Piloto no funcional",
+stageStyle: "soft",
+status: "Alianza lista para mapear las capacidades operativas y tecnológicas requeridas.",
+roadmap: { label: "piloto de 90 días en una cadena · sujeto a aprobación", from: 1, to: 2, tone: "pending" }
+},
+{
+projectId: null,
+name: "IA agéntica",
+stage: "Piloto funcional",
+stageStyle: "soft"
+}
+]
+}
+]
+},
+
 
 /* ------------------------------------------------------------------------
 PROYECTOS
 ------------------------------------------------------------------------ */
 projects: [
 /* ======================================================================
-RED DE EFECTIVO · Slide 5
+RED DE EFECTIVO
 ====================================================================== */
 {
 id: "red-de-efectivo",
 name: "Red de efectivo",
 icon: "pin",
-slides: [5],
 header: {
 title: "Red de efectivo · 10,738 puntos a $1.00 por operación",
 subtitle: "Habilita para el cliente depósito y retiro de efectivo en tienda. Propuesta del proveedor Monato."
@@ -132,7 +166,6 @@ tabs: [
 {
 id: "resumen",
 label: "Resumen Ejecutivo",
-slides: [5],
 blocks: [
 {
 type: "kpis",
@@ -165,7 +198,6 @@ items: [
 {
 id: "red-de-cadenas",
 label: "Red de Cadenas",
-slides: [5],
 blocks: [
 {
 type: "grid",
@@ -220,7 +252,6 @@ items: [
 {
 id: "impacto-financiero",
 label: "Impacto Financiero",
-slides: [5],
 blocks: [
 {
 type: "compare",
@@ -258,7 +289,6 @@ items: [
 {
 id: "recomendacion",
 label: "Recomendación",
-slides: [5],
 blocks: [
 {
 type: "callout",
@@ -273,13 +303,12 @@ sub: "El piloto mide el volumen real de depósitos y retiros por cadena para con
 },
 
 /* ======================================================================
-ALIANZA RENTAS VITALICIAS · Slides 6, 13, 14, 20
+ALIANZA RENTAS VITALICIAS
 ====================================================================== */
 {
 id: "alianza-rentas-vitalicias",
 name: "Alianza rentas vitalicias",
 icon: "shield",
-slides: [6, 13, 14, 20],
 header: {
 title: "Alianza para rentas vitalicias",
 subtitle: "La iniciativa evolucionó de un producto propio a una alianza comercial con un grupo que ya tiene Afore y aseguradora de rentas vitalicias."
@@ -288,12 +317,10 @@ tabs: [
 {
 id: "oportunidad",
 label: "Oportunidad",
-slides: [6, 13],
 blocks: [
 {
 type: "stats",
-title: "1 · Por qué ahora",
-slide: 6,
+title: "Por qué ahora",
 cols: 3,
 items: [
 { value: "5.10 M", tone: "deep", lead: "pensionados Ley 73: la última ola.", text: "Crecieron 6.7% en 2025, pero el 71% ya tiene 65 años o más." },
@@ -305,13 +332,11 @@ items: [
 type: "callout",
 tone: "sky",
 icon: "trend",
-slide: 6,
 lead: "Y el mercado de mañana ya despegó:",
 text: "rentas vitalicias por retiro +65% en 2025 (de 74 a 122), con pensiones 2.2 veces la garantizada."
 },
 {
 type: "heading",
-slide: 13,
 kicker: "PPR · El costo de no hacer nada",
 title: "Estamos viviendo la última ola de pensionados que hoy sabemos atender",
 text: "Lo que hoy sostiene el negocio es una generación que se retira y no se renueva. Detrás viene la Ley 97, cuyas pensiones de por vida paga en su mayoría una aseguradora."
@@ -323,7 +348,6 @@ blocks: [
 {
 type: "vbars",
 title: "La ola que hoy atendemos · Pensionados Ley 73",
-slide: 13,
 items: [
 { label: "2023", value: 4.54, display: "4.54 M", tone: "sky80" },
 { label: "2024", value: 4.78, display: "4.78 M", tone: "sky80" },
@@ -338,7 +362,6 @@ side: [
 {
 type: "stacked",
 title: "Lo que viene · Pensionados Ley 97",
-slide: 13,
 legend: [
 { label: "con renta vitalicia · la paga una aseguradora", tone: "orange40" },
 { label: "otras Ley 97 (garantizadas, temporales)", tone: "line" }
@@ -359,7 +382,6 @@ side: [
 type: "grid",
 cols: [1, 1, 1],
 title: "Lo que nos cuesta no estar ahí · Ingreso por intereses",
-slide: 13,
 blocks: [
 { type: "stats", cols: 1, items: [{ value: "$196 MDP", tone: "orange", text: "al año que hoy no podemos originar sobre las 515,500 rentas vitalicias, a nuestra penetración actual de 4.0%." }] },
 { type: "stats", cols: 1, items: [{ value: "≈ $4,400 MDP", tone: "red", text: "acumulados de 2026 a 2040 si no hacemos nada. Es un orden de magnitud, no un pronóstico: el cálculo y sus supuestos están en la lámina de sustento." }] },
@@ -378,7 +400,6 @@ items: [
 {
 id: "journey-pensionado",
 label: "Journey Pensionado",
-slides: [14],
 blocks: [
 {
 type: "heading",
@@ -452,11 +473,10 @@ items: [
 {
 id: "propuesta",
 label: "Propuesta",
-slides: [6],
 blocks: [
 {
 type: "alliance",
-title: "2 · Qué proponemos",
+title: "Qué proponemos",
 headline: "Una sola alianza con un grupo que ya tiene Afore y aseguradora",
 us: { name: "Consubanco", text: "Banco, fuerza comercial y cliente" },
 partnerLabel: "Socio comercial",
@@ -478,11 +498,10 @@ items: [
 {
 id: "criticidades",
 label: "Criticidades",
-slides: [6],
 blocks: [
 {
 type: "cards",
-title: "3 · Criticidades a cerrar este año",
+title: "Criticidades a cerrar este año",
 cols: 3,
 items: [
 { icon: "check", title: "Viabilidad regulatoria (validación interna y externa)", text: "De la alianza y del convenio para descontar crédito sobre una renta vitalicia que paga la aseguradora, no el IMSS." },
@@ -503,7 +522,6 @@ sub: "Entregables a diciembre: viabilidad regulatoria de la alianza y del conven
 {
 id: "plan-de-trabajo",
 label: "Plan de Trabajo",
-slides: [20],
 blocks: [
 {
 type: "heading",
@@ -524,7 +542,6 @@ weeks: [
 { day: "3", month: "dic" }, { day: "10", month: "dic" }, { day: "17", month: "dic" }, { day: "23", month: "dic" },
 { day: "8", month: "ene" }, { day: "15", month: "ene" }, { day: "22", month: "ene" }
 ],
-/* from/to: índice de semana (1 = 15 oct … 14 = 22 ene), leído de las barras de la lámina 20 */
 milestones: [
 { week: 5, label: "13 nov" },
 { week: 14, label: "22 ene" }
@@ -582,13 +599,12 @@ tasks: [
 },
 
 /* ======================================================================
-COMUNIDAD LAZOS · Slides 7, 22, 26
+COMUNIDAD LAZOS
 ====================================================================== */
 {
 id: "comunidad-lazos",
 name: "Comunidad Lazos",
 icon: "users",
-slides: [7, 22, 26],
 header: {
 title: "Comunidad Lazos",
 subtitle: "Espacio digital propio para los clientes del Programa Lazos, desarrollado con Soy Más bajo marca Consubanco. Soy Más aporta el 50% de la inversión; doce semanas a producción, sin tocar el core bancario."
@@ -597,7 +613,6 @@ tabs: [
 {
 id: "caso-de-negocio",
 label: "Caso de Negocio",
-slides: [7],
 blocks: [
 {
 type: "kpis",
@@ -670,7 +685,6 @@ body: "$7.8 MDP de comisión 2026–2034, con compra promedio de $304 al mes por
 {
 id: "la-comunidad",
 label: "La Comunidad",
-slides: [22],
 blocks: [
 {
 type: "heading",
@@ -716,33 +730,115 @@ caption: "Lo que ningún producto financiero nos dice de este cliente."
 {
 id: "beneficios-banco",
 label: "Beneficios para el Banco",
-slides: [22, 7],
 blocks: [
 {
-type: "cards",
-title: "Lo que genera para el banco",
-slide: 22,
-cols: 3,
+type: "grid",
+cols: [3, 2],
+blocks: [
+{
+type: "heading",
+kicker: "Modelo de negocio · Escenario base · 36 meses de proyección",
+title: "Dos motores de ingreso incremental para el banco",
+text: "Proyección a 36 meses, de 2026 a 2029."
+},
+{
+type: "kpis",
+cols: 2,
 items: [
-{ icon: "bag", title: "Venta cruzada", text: "CECs a producto · contrataciones" },
-{ icon: "pulse", title: "Transaccionalidad y saldo", text: "% que transacciona · gasto con débito" },
-{ icon: "userCheck", title: "Créditos nuevos", text: "Referidos enviados · % de conversión" },
-{ icon: "refresh", title: "Renovación de crédito", text: "Renovaciones originadas por el sitio" },
-{ icon: "trend", title: "Apoyo a la meta de churn", text: "Usuarios activos · frecuencia de visita" }
+{ value: "27.8%", label: "TIR sin costo de fondeo", tone: "orange" },
+{ value: "18.3%", label: "TIR con costo de fondeo", tone: "orange" }
+]
+}
 ]
 },
 {
 type: "chips",
-title: "Se miden en producción para decidir el escalamiento",
-slide: 7,
-items: ["Usuarios activos", "Uplift de renovación", "Referidos y conversión", "Transaccionalidad", "Saldo en cuenta", "NPS"]
+items: ["Ticket promedio $48,929", "plazo 56 meses", "tasa 2.57% mensual", "servicing $82 por crédito"]
+},
+{
+type: "premises",
+title: "Premisas del modelo · Las palancas que mueven los motores",
+items: [
+{ value: "5% → 30%", text: "Crecimiento de usuarios activos en 24 meses", tone: "deep" },
+{ value: "+20% anual", text: "Uplift de renovación sobre activos", tone: "deep" },
+{ value: "2% · 35%", text: "Referidos sobre clientes activos y su conversión", tone: "deep" },
+{ value: "1% → 15%", text: "Transaccionalidad con aliados embebidos 24 meses", tone: "orange" },
+{ value: "+$1,500", text: "Saldo promedio en cuenta CSB (clients activos)", tone: "orange" }
+]
+},
+{
+type: "banner",
+value: "Octubre 2029",
+text: "El negocio se paga solo: desde ese mes el neteo de ingresos menos costos es positivo (+$16.7 MDP en el mes) y se mantiene así a partir de ahí."
+},
+{
+type: "grid",
+cols: [3, 2],
+blocks: [
+{
+type: "engine",
+title: "Motor A · Crédito y captación",
+share: "98.7% del ingreso",
+tone: "deep",
+desc: "El cliente activo en la plataforma renueva su crédito antes y refiere a quien califica. Cada crédito se coloca al ticket promedio y paga intereses durante 56 meses; además, ese cliente deja más saldo en su cuenta.",
+stats: [
+{ value: "$642 MDP", text: "venta originada", note: "= 13,113 × $48,929", tone: "deep" },
+{ value: "$575.7 MDP", text: "ingreso por intereses", note: "Cobrando 2026 - 2034", tone: "deep" },
+{ value: "$41.4 MDP", text: "Captación incremental por clientes activos a sep 2029", tone: "deep" },
+{ value: "$2.9 MDP", text: "Eficiencia en costo de fondeo, ya dentro de la TIR", tone: "deep" }
+],
+charts: [
+{
+title: "Ingreso por intereses por año · MDP",
+items: [
+{ label: "2026", value: 0.1, display: "0.1", tone: "sky" },
+{ label: "2027", value: 10.4, display: "10.4", tone: "sky" },
+{ label: "2028", value: 64.0, display: "64.0", tone: "sky" },
+{ label: "2029", value: 151.2, display: "151.2", tone: "sky" }
+]
+},
+{
+title: "Saldo de captación por año · MDP",
+items: [
+{ label: "2026", value: 1.3, display: "1.3", tone: "deep" },
+{ label: "2027", value: 17.2, display: "17.2", tone: "deep" },
+{ label: "2028", value: 37.8, display: "37.8", tone: "deep" },
+{ label: "2029", value: 41.4, display: "41.4", tone: "deep" }
+]
+}
+]
+},
+{
+type: "engine",
+title: "Motor B · Red de aliados",
+share: "1.3% del ingreso",
+tone: "orange",
+desc: "El cliente de la comunidad compra en los comercios aliados de Soy Más. Cada compra deja una comisión bruta de 5% y Consubanco recibe la mitad, sin costo adicional para el cliente.",
+stats: [
+{ value: "$7.8 MDP", text: "ingreso por comisión", note: "2026 - 2034", tone: "deep" },
+{ value: "$304", text: "compra promedio", note: "al mes por cliente", tone: "deep" }
+],
+charts: [
+{
+title: "Ingreso por comisión por año · Miles de pesos",
+titleTone: "orange",
+items: [
+{ label: "2026", value: 3, display: "3", tone: "orange" },
+{ label: "2027", value: 244, display: "244", tone: "orange" },
+{ label: "2028", value: 904, display: "904", tone: "orange" },
+{ label: "2029", value: 1220, display: "1,220", tone: "orange" }
+]
+}
+],
+foot: "La transaccionalidad se estabiliza en 15% y el ingreso se vuelve recurrente."
+}
+]
 }
 ]
 },
 {
 id: "aliado-estrategico",
 label: "Aliado Estratégico",
-slides: [26],
 blocks: [
 {
 type: "heading",
@@ -799,13 +895,12 @@ items: [
 },
 
 /* ======================================================================
-CONSUMÓVIL · Slides 8, 30, 31
+CONSUMÓVIL
 ====================================================================== */
 {
 id: "consumovil",
 name: "MVNO · ConsuMóvil",
 icon: "phone",
-slides: [8, 30, 31],
 header: {
 title: "ConsuMóvil",
 subtitle: "Escenario conservador de 63 meses, de octubre 2026 a diciembre 2031. Revenue share de Consubanco: 50% sobre la ganancia. Cifras en millones de pesos."
@@ -814,7 +909,6 @@ tabs: [
 {
 id: "caso-de-negocio",
 label: "Caso de Negocio",
-slides: [8],
 blocks: [
 {
 type: "kpis",
@@ -894,7 +988,6 @@ items: [
 {
 id: "investigacion-clientes",
 label: "Investigación Clientes",
-slides: [30],
 blocks: [
 {
 type: "heading",
@@ -931,7 +1024,6 @@ items: [
 {
 id: "perfiles",
 label: "Perfiles",
-slides: [30],
 blocks: [
 {
 type: "personas",
@@ -963,7 +1055,6 @@ labels: { friction: "Fricción:", solution: "Solución:" }
 {
 id: "consumovil-beneficio",
 label: "ConsuMóvil como Beneficio",
-slides: [31],
 blocks: [
 {
 type: "heading",
@@ -1027,7 +1118,6 @@ items: [
 {
 id: "temas-por-resolver",
 label: "Temas por Resolver",
-slides: [31],
 blocks: [
 {
 type: "cards",
@@ -1045,15 +1135,277 @@ items: [
 }
 ]
 },
+/* ======================================================================
+OFERTA BANCA MINORISTA
+====================================================================== */
+{
+id: "oferta-banca-minorista",
+name: "Oferta banca minorista",
+icon: "card",
+header: {
+title: "Oferta para Banca Minorista",
+subtitle: "2.75 millones de pensionados IMSS con Pensión Mínima Garantizada — el 51.3% de 5.4 millones — no tienen excedente descontable."
+},
+tabs: [
+{
+id: "caso-de-negocio",
+label: "Caso de Negocio",
+blocks: [
+{
+type: "kpis",
+cols: 3,
+items: [
+{ value: "$2,010 MDP", label: "originación acumulada 2027 – 2031", tone: "orange" },
+{ value: "300,874", label: "créditos otorgados en el horizonte" },
+{ value: "$3,190", label: "capacidad mensual del pensionado" }
+]
+},
+{
+type: "grid",
+cols: [1, 1],
+blocks: [
+{
+type: "vbars",
+title: "Originación anual proyectada · MDP",
+items: [
+{ label: "2027", value: 10, display: "$10", tone: "orange" },
+{ label: "2028", value: 150, display: "$150", tone: "orange" },
+{ label: "2029", value: 413, display: "$413", tone: "orange" },
+{ label: "2030", value: 610, display: "$610", tone: "orange" },
+{ label: "2031", value: 827, display: "$827", tone: "orange" }
+]
+},
+{
+type: "share",
+title: "Tres productos, tres momentos de necesidad",
+labels: { credits: "de los créditos", origination: "de la originación" },
+items: [
+{ name: "Cashloan Exprés", terms: "$500 – $6,000 · 1 a 3 meses · 55%", text: "Puerta de entrada, sin tocar su pensión", credits: 58, origination: 32 },
+{ name: "Anticipo de Pensión", terms: "$500 – $6,000 · 1 a 2 meses · 5% + IVA", text: "Capta la portabilidad de la pensión", credits: 27, origination: 10 },
+{ name: "Cashloan", terms: "$5,000 – $40,000 · 6 a 18 meses · 38%", text: "Concentra el valor del portafolio", credits: 15, origination: 58 }
+],
+foot: "TIR mínima aceptada 15.39% · IMORA de referencia 11.3% · 28 ciclos de contratación modelados por cliente. La rentabilidad por producto se cierra con las corridas del modelo."
+}
+]
+},
+{
+type: "text",
+cols: 2,
+items: [
+{ lead: "La capacidad de pago del pensionado es fija", text: "gana quien la rota, no quien la compromete por años.", tone: "deep" },
+{ lead: "Los tres productos se encuentran en fase de comprobación", text: "recomendaciones de ajustes por parte de la consultora Akya.", tone: "deep" }
+]
+},
+{ type: "callout", tone: "deep", icon: "flag", text: "Cerrar los business cases, la rentabilidad por producto y los unit economics, y definir la ruta de desarrollo con consultora o Bankaya.", sub: "El Hub acompaña la iniciativa donde agrega valor; la ejecución corresponde a las áreas y socios asignados. · 2027: salida a prueba con clientes." },
+{ type: "notes", items: ["PMG 2026: $10,636.54 mensuales · Art. 190 de la Ley del Seguro Social. Proyección de originación 2027 – 2031, borrador para presupuesto 2027, sujeta al cierre de los business cases."] }
+]
+},
+{
+id: "productos-frente-al-mercado",
+label: "Productos frente al Mercado",
+blocks: [
+{
+type: "heading",
+title: "Nuestros productos frente al mercado",
+text: "Condiciones iguales o mejores que las de sus competidores más cercanos"
+},
+{
+type: "products",
+competitorsTitle: "Competidores más cercanos",
+items: [
+{
+tag: "Puerta de entrada",
+name: "Cash Loan Exprés",
+tagline: "Crédito chico desde el celular, sin portar la pensión.",
+specs: [
+{ label: "Monto", value: "$500 – $6,000" },
+{ label: "Plazo", value: "1 a 3 meses" },
+{ label: "Tasa anual", value: "127% · sin comisión", accent: true },
+{ label: "Cobro", value: "Pago voluntario" }
+],
+columns: ["Institución", "Monto", "Plazo", "Tasa anual"],
+competitors: [
+["Bankaya", "$500 – $7,500", "2 a 8 semanas", "255%"],
+["Stori", "$500 – $23,000", "2 a 12 meses", "153%"],
+["DiDi Finanzas", "$500 – $46,800", "1 a 3 meses", "300%"]
+],
+takeawayLead: "127% anual:",
+takeaway: "la mitad que Bankaya y debajo de Stori y DiDi."
+},
+{
+tag: "Portabilidad",
+name: "Anticipo de Pensión",
+tagline: "Adelanto de la pensión que se descuenta solo.",
+specs: [
+{ label: "Monto", value: "$500 – $6,000" },
+{ label: "Plazo", value: "1 a 2 meses" },
+{ label: "Costo", value: "0% tasa · 6% + IVA", accent: true },
+{ label: "Cobro", value: "Cargo a cuenta CSB" }
+],
+columns: ["Institución", "Monto", "Plazo", "Comisión"],
+competitors: [
+["BBVA", "$100 – $6,200", "1 a 2 meses", "7% + IVA"],
+["Banorte", "Hasta $10,000", "Hasta 2 meses", "7% + IVA"],
+["Inbursa", "$500 – $15,000", "Hasta 2 meses", "6% + IVA"]
+],
+takeawayLead: "6% + IVA:",
+takeaway: "iguala al más barato y queda debajo del promedio (6.7%)."
+},
+{
+tag: "Rentabilidad",
+name: "Cashloan",
+tagline: "Monto mayor con pagos fijos que termina en meses.",
+specs: [
+{ label: "Monto", value: "$5,000 – $40,000" },
+{ label: "Plazo", value: "6 a 18 meses" },
+{ label: "Tasa anual", value: "69% · sin comisión", accent: true },
+{ label: "Cobro", value: "Cargo a cuenta CSB" }
+],
+columns: ["Institución", "Monto", "Plazo", "Tasa anual"],
+competitors: [
+["Dimex", "$2,000 – $200,000", "6 a 48 meses", "83.8%"],
+["BanCoppel", "$6,700 – $53,900", "12 a 24 meses", "76.0%"],
+["Banco Azteca", "$2,000 – $200,000", "1 a 38 meses", "49.6%"]
+],
+takeawayLead: "69% anual:",
+takeaway: "el promedio de los tres, con plazos más cortos."
+}
+]
+},
+{ type: "notes", items: ["Fuente: benchmark competitivo interno. Tasas anuales; en el anticipo, comisión por disposición.", "Borrador para presupuesto 2027 · Confidencial"] }
+]
+},
+{
+id: "consolidado",
+label: "Consolidado",
+blocks: [
+{
+type: "heading",
+title: "Consolidado · Tres productos 2027–2031",
+text: "Los créditos y la originación se suman entre productos; los clientes no, porque una persona puede tener más de un producto"
+},
+{
+type: "kpis",
+cols: 4,
+items: [
+{ value: "$2,010 M", label: "originación acumulada 2027–2031" },
+{ value: "300,874", label: "créditos otorgados en el horizonte" },
+{ value: "$827 M", label: "originación en 2031", tone: "orange" },
+{ value: "112,104", label: "créditos otorgados en 2031", tone: "orange" }
+]
+},
+{
+type: "grid",
+cols: [3, 2],
+blocks: [
+{
+type: "multistack",
+title: "Originación anual por producto ($ millones)",
+series: [
+{ label: "Cash Loan Exprés", tone: "deep" },
+{ label: "Anticipo de Pensión", tone: "orange" },
+{ label: "Cashloan", tone: "sky" }
+],
+/* value: dato de la tabla · display: etiqueta tal como aparece en la gráfica (vacía si no tiene) */
+items: [
+{ label: "2027", values: [{ value: 8.0, display: "" }, { value: 1.9, display: "" }, { value: 0, display: "" }] },
+{ label: "2028", values: [{ value: 76.7, display: "77" }, { value: 18.6, display: "" }, { value: 54.5, display: "55" }] },
+{ label: "2029", values: [{ value: 143.8, display: "144" }, { value: 43.9, display: "44" }, { value: 225.7, display: "226" }] },
+{ label: "2030", values: [{ value: 183.6, display: "184" }, { value: 61.9, display: "62" }, { value: 364.3, display: "364" }] },
+{ label: "2031", values: [{ value: 223.1, display: "223" }, { value: 79.8, display: "80" }, { value: 523.8, display: "524" }] }
+]
+},
+{
+type: "contribution",
+title: "Qué aporta cada producto",
+sub: "Participación 2027–2031",
+items: [
+{ name: "Cash Loan Exprés", tone: "deep", stats: [{ value: "32%", label: "de la originación" }, { value: "58%", label: "de los créditos" }], text: "Puerta de entrada: trae clientes y volumen de créditos." },
+{ name: "Anticipo de Pensión", tone: "orange", stats: [{ value: "10%", label: "de la originación" }, { value: "27%", label: "de los créditos" }], text: "Uso recurrente de ticket chico; atrae portabilidad." },
+{ name: "Cashloan", tone: "sky", stats: [{ value: "58%", label: "de la originación" }, { value: "15%", label: "de los créditos" }], text: "Ticket alto: concentra los pesos del portafolio." }
+]
+}
+]
+},
+{
+type: "table",
+columns: [
+{ label: "Originación ($ millones)" },
+{ label: "2027", align: "right" },
+{ label: "2028", align: "right" },
+{ label: "2029", align: "right" },
+{ label: "2030", align: "right" },
+{ label: "2031", align: "right" },
+{ label: "Total", align: "right" }
+],
+rows: [
+{ cells: [{ text: "Cash Loan Exprés", dot: "deep" }, "$8.0", "$76.7", "$143.8", "$183.6", "$223.1", { text: "$635.4", strong: true }] },
+{ cells: [{ text: "Anticipo de Pensión", dot: "orange" }, "$1.9", "$18.6", "$43.9", "$61.9", "$79.8", { text: "$206.1", strong: true }] },
+{ cells: [{ text: "Cashloan", dot: "sky" }, "—", "$54.5", "$225.7", "$364.3", "$523.8", { text: "$1,168.3", strong: true }] },
+{ strong: true, highlight: "sky", cells: ["Total originación", "$10.0", "$149.8", "$413.4", "$609.9", "$826.8", "$2,009.8"] },
+{ strong: true, highlight: "sky", cells: ["Total créditos", "3,112", "31,470", "65,712", "88,477", "112,104", "300,874"] }
+]
+},
+{ type: "notes", items: ["Borrador para presupuesto 2027 · Confidencial"] }
+]
+},
+{
+id: "cronograma",
+label: "Cronograma",
+blocks: [
+{
+type: "heading",
+title: "Cronograma de etapas por producto",
+text: "T0 noviembre 2026 · cada producto arranca su prueba cuando el anterior entra a lanzamiento gradual"
+},
+{
+type: "phases",
+/* Escala en meses desde oct-2026 (0). Las columnas son trimestres; la última agrupa 2030–31.
+from/to se leyeron de las barras del cronograma. */
+years: [
+{ label: "2026", span: 1 },
+{ label: "2027", span: 4 },
+{ label: "2028", span: 4 },
+{ label: "2029", span: 4 },
+{ label: "2030–31", span: 1 }
+],
+quarters: ["Q4", "Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4", ""],
+t0: { at: 1, label: "T0 · nov 2026" },
+legend: [
+{ key: "hab", label: "Habilitación", tone: "slate" },
+{ key: "prueba", label: "Prueba controlada", tone: "sky" },
+{ key: "lanz", label: "Lanzamiento gradual", tone: "mid" },
+{ key: "masif", label: "Masificación", tone: "deep" }
+],
+rows: [
+{ name: "Habilitación común", sub: "Plataforma, app y modelo de riesgo", bars: [{ phase: "hab", from: 1, to: 6, label: "5 meses" }] },
+{ name: "Cash Loan Exprés", sub: "Plazo 1 a 3 meses", bars: [{ phase: "prueba", from: 6, to: 12, label: "6 meses" }, { phase: "lanz", from: 12, to: 18, label: "6 meses" }, { phase: "masif", from: 18, to: 42, label: "Masificación" }], milestone: { at: 33, label: "Madurez · jul 2029" } },
+{ name: "Anticipo de Pensión", sub: "Plazo 1 a 2 meses", bars: [{ phase: "hab", from: 8, to: 12, label: "4 meses" }, { phase: "prueba", from: 12, to: 16, label: "4 meses" }, { phase: "lanz", from: 16, to: 22, label: "6 meses" }, { phase: "masif", from: 22, to: 42, label: "Masificación" }], milestone: { at: 39.5, label: "Madurez · abr 2030" } },
+{ name: "Cashloan", sub: "Plazo 6 a 18 meses", bars: [{ phase: "hab", from: 12, to: 16, label: "4 meses" }, { phase: "prueba", from: 16, to: 22, label: "6 meses" }, { phase: "lanz", from: 22, to: 28, label: "6 meses" }, { phase: "masif", from: 28, to: 42, label: "Masificación" }] }
+]
+},
+{
+type: "phasecards",
+items: [
+{ tone: "slate", title: "Habilitación", duration: "4 a 5 meses", text: "App, modelo de riesgo, contratos, cobro y fondeo listos para el primer crédito.", gateLabel: "Avanza con:", gate: "Backlog completo y modelo de riesgo v0 aprobado." },
+{ tone: "sky", title: "Prueba controlada", duration: "4 a 6 meses", text: "1,000 clientes con volumen y pérdida topados, para aprender.", gateLabel: "Avanza con:", gate: "Dos ciclos con mora, conversión y recompra en rango." },
+{ tone: "mid", title: "Lanzamiento gradual", duration: "6 meses", text: "Volumen creciente; se ajustan precio, política y canal.", gateLabel: "Avanza con:", gate: "Unit economics y operación estables." },
+{ tone: "deep", title: "Masificación", duration: "Hasta dic 2031", text: "Más canales y renovación 100% digital.", gateLabel: "Se sostiene con:", gate: "Rentabilidad anual arriba de 15.92%." }
+]
+},
+{ type: "notes", items: ["Borrador para presupuesto 2027 · Confidencial"] }
+]
+}
+]
+},
 
 /* ======================================================================
-BRIGADA CX · Slide 10
+BRIGADA CX
 ====================================================================== */
 {
 id: "brigada-cx",
 name: "Brigada CX",
 icon: "headset",
-slides: [10],
 header: {
 title: "Brigada CX",
 subtitle: "Primer caso de uso conceptualizado: la respuesta ante una falla que impide a los clientes operar en la plataforma."
@@ -1062,7 +1414,6 @@ tabs: [
 {
 id: "resumen",
 label: "Resumen",
-slides: [10],
 blocks: [
 {
 type: "kpis",
@@ -1080,7 +1431,6 @@ items: [
 {
 id: "protocolo",
 label: "Protocolo",
-slides: [10],
 blocks: [
 {
 type: "steps",
@@ -1100,7 +1450,6 @@ items: [
 {
 id: "war-room",
 label: "War Room",
-slides: [10],
 blocks: [
 {
 type: "warroom",
@@ -1113,7 +1462,6 @@ text: "Con activación condicionada de PLD y Riesgo Empleado según el tipo de i
 {
 id: "roadmap",
 label: "Roadmap",
-slides: [10],
 blocks: [
 {
 type: "stages",
@@ -1124,25 +1472,6 @@ items: [
 ]
 },
 { type: "statement", compact: true, text: "La segunda etapa escala el mecanismo a casos de uso adicionales, una vez probado el primero en el piloto de 2027." }
-]
-},
-{
-id: "kpis",
-label: "KPIs",
-slides: [10],
-blocks: [
-{
-type: "metrics",
-title: "Cómo se medirá el piloto para continuar",
-items: [
-{ icon: "search", label: "Tiempo de detección" },
-{ icon: "bolt", label: "Tiempo de activación" },
-{ icon: "chat", label: "Cobertura de aviso" },
-{ icon: "refresh", label: "Tiempo de restablecimiento" },
-{ icon: "check", label: "Incidentes con protocolo completo" },
-{ icon: "shield", label: "Quejas evitadas" }
-]
-}
 ]
 }
 ]
