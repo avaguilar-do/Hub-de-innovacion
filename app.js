@@ -971,6 +971,8 @@ BRAND.logo ? `<img src="${esc(BRAND.logo)}" alt="${esc(BRAND.name)}">` : `<span 
 }</span>
 <span class="brand-text"><strong>${esc(BRAND.title)}</strong><small>${esc(BRAND.subtitle)}</small></span>`;
 el.setAttribute("aria-label", `${BRAND.name} · ${BRAND.title}`);
+const fav = document.getElementById("favicon");
+if (fav && BRAND.logo) fav.href = BRAND.logo;
 }
 
 function buildNav() {
