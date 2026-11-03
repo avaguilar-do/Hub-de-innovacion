@@ -822,12 +822,6 @@ const view = $("#view");
 
 function renderHome() {
 state.projectId = null;
-const stages = ALL.reduce((acc, it) => {
-if (it.stage) acc[it.stage] = (acc[it.stage] || 0) + 1;
-return acc;
-}, {});
-const stageStyleOf = (s) => (ALL.find((i) => i.stage === s) || {}).stageStyle;
-
 view.innerHTML = `
 <div class="page page--home">
 <section class="hero">
@@ -837,23 +831,6 @@ view.innerHTML = `
 <div class="objective">
 <span class="objective-label">${icon("target", "ic-sm")}${esc(P.objectiveLabel)}</span>
 <p>${esc(P.objective)}</p>
-</div>
-</div>
-<div class="hero-side">
-<div class="hero-count">
-<strong>${ALL.length}</strong>
-<span>Iniciativas</span>
-</div>
-<div class="hero-breakdown">
-<span class="field-label">${esc(P.columns.stage)}</span>
-${Object.keys(stages)
-.map(
-(s) => `<div class="hb-row"><span class="stage stage--${stageStyleOf(s)} stage--sm">${esc(s)}</span><span class="hb-bar"><i style="width:${(stages[s] / ALL.length) * 100}%"></i></span><strong>${stages[s]}</strong></div>`
-)
-.join("")}
-</div>
-<div class="hero-types">
-${P.groups.map((g) => `<span class="type grp--${g.tone}">${icon("play", "ic-xs")}${esc(g.name)} <strong>${g.initiatives.length}</strong></span>`).join("")}
 </div>
 </div>
 </section>
